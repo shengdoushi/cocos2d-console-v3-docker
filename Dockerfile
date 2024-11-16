@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM --platform=linux/amd64 debian:buster-slim
 
 RUN echo 'deb http://mirrors.aliyun.com/debian/ buster main non-free contrib \
 deb http://mirrors.aliyun.com/debian-security buster/updates main \
@@ -26,4 +26,6 @@ RUN fetchDeps='python wget unzip' && \
 #ADD libgcc_s.so.1 /lib32/libgcc_s.so.1
 RUN /cocos2d-x-3.16/tools/cocos2d-console/bin/cocos --agreement n
 
-ENTRYPOINT ["/cocos2d-x-3.16/tools/cocos2d-console/bin/cocos"]
+RUN ln -s /cocos2d-x-3.16/tools/cocos2d-console/bin/cocos /usr/local/bin/cocos
+
+# ENTRYPOINT ["/cocos2d-x-3.16/tools/cocos2d-console/bin/cocos"]

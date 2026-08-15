@@ -1,14 +1,12 @@
-FROM --platform=linux/amd64 debian:buster-slim
+FROM debian:buster-slim
 
-RUN echo 'deb http://mirrors.aliyun.com/debian/ buster main non-free contrib \
-deb http://mirrors.aliyun.com/debian-security buster/updates main \
-deb http://mirrors.aliyun.com/debian/ buster-updates main non-free contrib \
-deb http://mirrors.aliyun.com/debian/ buster-backports main non-free contrib \
-deb-src http://mirrors.aliyun.com/debian-security buster/updates main \
-deb-src http://mirrors.aliyun.com/debian/ buster main non-free contrib \
-deb-src http://mirrors.aliyun.com/debian/ buster-updates main non-free contrib \
-deb-src http://mirrors.aliyun.com/debian/ buster-backports main non-free contrib \
-' > /etc/apt/sources.list
+# Debian 10 (buster) 已归档，deb.debian.org / 国内常规镜像不再提供 Release 文件
+RUN printf '%s\n' \
+    'deb http://archive.debian.org/debian buster main contrib non-free' \
+    'deb http://archive.debian.org/debian-security buster/updates main contrib non-free' \
+    'deb http://archive.debian.org/debian buster-updates main contrib non-free' \
+    > /etc/apt/sources.list \
+    && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
 
 RUN fetchDeps='python wget unzip' && \
 	apt-get update && apt-get install -y  --no-install-recommends $fetchDeps && \
@@ -26,6 +24,6 @@ RUN fetchDeps='python wget unzip' && \
 #ADD libgcc_s.so.1 /lib32/libgcc_s.so.1
 RUN /cocos2d-x-3.16/tools/cocos2d-console/bin/cocos --agreement n
 
-RUN ln -s /cocos2d-x-3.16/tools/cocos2d-console/bin/cocos /usr/local/bin/cocos
+ENV PATH="/cocos2d-x-3.16/tools/cocos2d-console/bin:${PATH}"
 
 # ENTRYPOINT ["/cocos2d-x-3.16/tools/cocos2d-console/bin/cocos"]
